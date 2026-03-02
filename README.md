@@ -237,8 +237,7 @@ Streamlit Web Interface
 
 The project is deployed using:
 
-✅ Streamlit Cloud / Hugging Face Spaces
-(Add live deployment URL here)
+https://research-summarizer.streamlit.app/
 
 ---
 

@@ -67,11 +67,14 @@ def _ensure_spacy_model(model: str = "en_core_web_sm"):
         import spacy
         spacy.load(model)
     except OSError:
-        subprocess.run(
-            [sys.executable, "-m", "spacy", "download", model],
-            check=True,
-            capture_output=True,
-        )
+        try:
+            subprocess.run(
+                [sys.executable, "-m", "spacy", "download", model],
+                check=True,
+                capture_output=True,
+            )
+        except subprocess.CalledProcessError as e:
+            print(f"Warning: Failed to download spacy model {model}. {e}")
 
 _ensure_spacy_model()
 
