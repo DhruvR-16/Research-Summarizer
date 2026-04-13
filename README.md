@@ -1,293 +1,104 @@
-# Research Topic Analysis & Summarization System
+# 🧠 Agentic AI Research & Analysis Assistant
+### *Bridging Statistical Rigor and Autonomous Reasoning*
 
-### Traditional NLP-Based Research Paper Analyzer
-
----
-
-## Problem Statement
-
-The rapid growth of academic research publications makes it difficult for researchers and students to efficiently understand developments within a specific domain. Manually reading multiple research papers to extract key insights is time-consuming and inefficient.
-
-This project addresses the challenge of automatically **retrieving, analyzing, and summarizing research papers** related to a user-defined topic using **traditional Natural Language Processing (NLP)** techniques.
-
-The developed system acts as an **intelligent research assistant** that:
-
-* Retrieves relevant academic papers
-* Identifies dominant research themes
-* Generates concise extractive summaries
-* Presents insights through an interactive web interface
-
-The project strictly avoids Large Language Models (LLMs) and instead relies on explainable statistical NLP methods.
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![LangGraph](https://img.shields.io/badge/ORCHESTRATION-LangGraph-orange.svg)](https://github.com/langchain-ai/langgraph)
+[![Groq](https://img.shields.io/badge/Inference-Groq-green.svg)](https://groq.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
-## Data Description
+## 📖 Project Overview
+The **Agentic AI Research Assistant** is a next-generation research platform designed to automate the lifecycle of academic and web-based research. By combining traditional **Statistical NLP** founded in Milestone 1 with a cutting-edge **Autonomous Agentic Flow** in Milestone 2, the system provides both explainable insights and deep-reasoning capabilities.
 
-### Data Source
-
-Research papers are dynamically collected using the **arXiv API**, ensuring access to real-world academic literature across multiple domains:
-
-* Artificial Intelligence (cs.AI)
-* Physics (physics.gen-ph)
-* Mathematics (math.CO)
-* Economics (econ.GN)
-* Quantitative Biology (q-bio.BM)
+The assistant doesn't just search the web; it **thinks**. It evaluates its own research, identifies information gaps, and autonomously decides whether to loop back for more data or synthesize its findings into a professional, research-grade report.
 
 ---
 
-### Dataset Features
+## 🏗️ Technical Architecture (Milestone 2)
 
-Each document consists of:
+The core engine is built on a **Node-Based State Machine** orchestrated by **LangGraph**. This mimics the human research process of iteration and refinement.
 
-* Research Paper Title
-* Research Paper Abstract
-
-The final document representation used in analysis is:
-
-```
-Title + Abstract
-```
-
-Abstracts are used instead of full PDFs because they contain dense research information while significantly reducing computational complexity.
-
----
-
-### Stored Data Artifacts
-
-```
-data/
- ├── raw_docs.pkl
- ├── clean_docs.pkl
- ├── tfidf_vectorizer.pkl
- ├── tfidf_matrix.pkl
- └── lda_model.pkl
+```mermaid
+graph TD
+    Start([User Query]) --> Search[Search Node]
+    Search --> Fetch[Fetch Node]
+    Fetch --> Summarize[Summarize Node]
+    Summarize --> Analyze[Analyze Node]
+    Analyze --> Decision{Enough Info?}
+    Decision -- NO --> Search
+    Decision -- YES --> Extract[Fact Extraction Node]
+    Extract --> Report[Report Node]
+    Report --> End([Final Markdown Report])
 ```
 
 ---
 
-## Exploratory Data Analysis (EDA)
+## ✨ Features (Member-Specific Work)
 
-Exploratory analysis was conducted to understand corpus characteristics:
+### 📡 Data & Discovery (Member 1 - Akhilesh)
+*   **Hybrid Search Engine**: Integrates **Tavily AI** (Premium), **DuckDuckGo**, and **ArXiv** for a "Best of Both Worlds" search strategy.
+*   **Smart Fetching**: Clean content extraction from complex websites using BeautifulSoup with noise-reduction logic.
 
-* Vocabulary distribution across domains
-* Average tokens per research paper
-* Frequent domain-specific keywords
-* Topic diversity within collected papers
+### 🧠 Agent Logic & Orchestration (Member 2 - Lakshya)
+*   **Autonomous Decision Loop**: The agent evaluates its own findings. If the topic is too complex, it automatically iterates to find more data.
+*   **Hard-Fact Extraction**: Isolates critical technical data (numbers, dates, percentages) into a professional **Research at a Glance** table.
+*   **Token-Preserving State**: Centralized state management that intelligently hands off data between nodes.
 
-### Key Observations
-
-* Research titles strongly influence topic similarity.
-* Abstracts provide sufficient semantic information.
-* Common academic terms are automatically suppressed using TF-IDF weighting.
-* Domain keywords dominate topic formation.
-
-These insights validated the use of statistical NLP techniques for analysis.
-
----
-
-## Methodology
-
-The system follows a structured end-to-end NLP pipeline.
+### ✍️ Intelligent Synthesis (Member 3 - Dhruv)
+*   **Tiered LLM Architecture**: 
+    *   **Llama-3.1-8B**: Lightning-fast, cost-effective extraction for summaries.
+    *   **Llama-3.3-70B**: High-reasoning synthesis for the final final report.
+*   **Local NLP Pre-Filtering**: Uses local TextRank/Keyword ranking to reduce webpage "junk" before sending it to the API, saving up to 80% on token costs.
 
 ---
 
-### 1️⃣ Data Ingestion
+## 🛠️ Getting Started
 
-* Papers fetched using arXiv API
-* Multi-domain corpus construction
-* Duplicate paper removal
-* Automated dataset generation
+### 1. Environment Setup
+Create a `.env` file in the root directory:
+```bash
+# --- LLM Architecture ---
+GROQ_API_KEY=your_groq_key
+MODEL_NAME=llama-3.3-70b-versatile
 
----
+# --- Search Intelligence ---
+TAVILY_API_KEY=your_tavily_key  # Optional: For Best-of-Best results
 
-### 2️⃣ Text Preprocessing
-
-Performed using **spaCy NLP pipeline**:
-
-* Lowercase normalization
-* Stopword removal
-* Lemmatization
-* Punctuation removal
-* Citation & LaTeX noise removal
-* POS filtering (NOUN, PROPN, ADJ)
-
-Purpose:
-Improve semantic quality and remove linguistic noise.
-
----
-
-### 3️⃣ TF-IDF Vectorization
-
-TF-IDF converts documents into numerical vectors based on:
-
-* **Term Frequency (TF)** – importance within a document
-* **Inverse Document Frequency (IDF)** – rarity across corpus
-
-TF-IDF is used twice:
-
-1. Document similarity for query-based retrieval
-2. Sentence similarity for summarization
-
-Reason:
-Provides interpretable statistical representation without deep learning models.
-
----
-
-### 4️⃣ Query-Based Document Retrieval
-
-When a user enters a research topic:
-
-1. Query is transformed using trained TF-IDF vectorizer
-2. Cosine similarity is computed
-3. Top-K relevant papers are selected
-
-This ensures focused topic analysis instead of processing the entire dataset.
-
----
-
-### 5️⃣ Topic Modeling — LDA
-
-Latent Dirichlet Allocation (LDA) identifies hidden thematic structures within research papers.
-
-Output:
-
-* Topic clusters
-* Dominant keywords per topic
-
-Purpose:
-Reveal conceptual research trends automatically.
-
----
-
-### 6️⃣ Extractive Summarization — TextRank
-
-TextRank is a graph-based ranking algorithm inspired by Google PageRank.
-
-#### Process:
-
-1. Retrieved documents are combined
-2. Text is split into sentences
-3. Sentences converted into TF-IDF vectors
-4. Sentence similarity matrix computed
-5. Similarity graph constructed
-6. PageRank algorithm applied
-7. Highest-ranked sentences selected
-8. Sentences reordered for readability
-
-Final output:
-A coherent extractive summary representing core research insights.
-
----
-
-## Evaluation Strategy
-
-Since this project performs **analysis and summarization rather than prediction**, traditional metrics such as Accuracy, F1-score, MAE, or RMSE are not applicable.
-
-Evaluation is performed using:
-
-* Retrieval relevance inspection
-* Topic interpretability analysis
-* Summary coherence validation
-* Runtime efficiency assessment
-
-Results demonstrate effective topic discovery and meaningful summary generation.
-
----
-
-## Optimization Techniques
-
-Performance improvements include:
-
-* Abstract-only processing
-* Dataset size control
-* Duplicate removal
-* spaCy batch processing (`nlp.pipe`)
-* Precomputed TF-IDF matrices
-* Streamlit caching mechanisms
-
-These optimizations improve speed, scalability, and deployment stability.
-
----
-
-## System Architecture
-
+# --- App Config ---
+HF_TOKEN=your_huggingface_token
 ```
-arXiv API
-     ↓
-Data Preprocessing
-     ↓
-TF-IDF Vectorization
-     ↓
-User Query Input
-     ↓
-Cosine Similarity Retrieval
-     ↓
-Relevant Documents
-     ↓
-LDA Topic Modeling
-     ↓
-TextRank Summarization
-     ↓
-Streamlit Web Interface
+
+### 2. Installation
+```bash
+pip install -r requirements.txt
+python3 -m spacy download en_core_web_sm
+```
+
+### 3. Usage
+**Full Agentic Flow (Current):**
+```bash
+python3 milestone_2/test_full_flow.py "Latest breakthroughs in Carbon Capture 2024"
 ```
 
 ---
 
-## Deployment
+## 👥 Meet the Team
 
-The project is deployed using:
-
-https://research-summarizer.streamlit.app/
-
----
-
-## Team Contribution
-
-## 👥 Team Contribution
-
-| Team Member         | Primary Responsibilities                                                  | Supporting Contributions                                |
-| ------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------- |
-| **Akhilesh Kumar**  | Data ingestion using arXiv API and preprocessing pipeline development     | Dataset validation, preprocessing optimization, testing |
-| **Dhruv Ramani**    | TF-IDF based document retrieval and TextRank summarization implementation | System integration, NLP pipeline design                 |
-| **Lakshya Agarwal** | LDA topic modeling and topic analysis                                     | Model tuning, evaluation and visualization support      |
-| **Kavya Jain**      | Streamlit UI development and project documentation                        | Interface integration, testing, deployment setup        |
-
+| Team Member | Role | Contribution |
+| :--- | :--- | :--- |
+| **Akhilesh Kumar** | **Data Architect** | Real-time Search Integration & Web Scraping |
+| **Lakshya Agarwal** | **Workflow Strategist** | LangGraph Orchestration & Decision Logic |
+| **Dhruv Ramani** | **Intelligence Engineer** | LLM Optimization & Research Synthesis |
 
 ---
 
-## Technologies Used
-
-* Python
-* spaCy
-* Scikit-learn
-* Gensim
-* NetworkX
-* Streamlit
-* arXiv API
+## 🔭 Future Roadmap (Milestone 3)
+*   **Interactive Dashboard**: A state-of-the-art Streamlit UI for real-time research visualization.
+*   **Chat Memory**: Interactive follow-up questions about the research report.
+*   **Multi-Format Export**: One-click download of reports as PDF or LaTeX.
 
 ---
 
-## Future Scope
-
-The system architecture is designed for extension into:
-
-* Autonomous research agents
-* Real-time academic search
-* Multi-document reasoning
-* Research question answering systems
-
----
-
-## Conclusion
-
-This project demonstrates how traditional NLP techniques can effectively analyze academic literature without relying on large language models.
-
-By integrating:
-
-* TF-IDF for document representation
-* LDA for topic discovery
-* TextRank for extractive summarization
-
-the system provides an interpretable and scalable solution for automated research understanding.
-
----
+> [!NOTE]
+> This project was developed as part of a high-performance Agentic AI training curriculum. For support or contributions, please contact the development team.
