@@ -90,15 +90,6 @@ python3 milestone_2/test_full_flow.py "Latest breakthroughs in Carbon Capture 20
 | **Akhilesh Kumar** | **Data Architect** | Real-time Search Integration & Web Scraping |
 | **Lakshya Agarwal** | **Workflow Strategist** | LangGraph Orchestration & Decision Logic |
 | **Dhruv Ramani** | **Intelligence Engineer** | LLM Optimization & Research Synthesis |
+| **Kavya Jain** | **UI/UX Engineer** | Dashboard Interface & Documentation |
 
 ---
-
-## 🔭 Future Roadmap (Milestone 3)
-*   **Interactive Dashboard**: A state-of-the-art Streamlit UI for real-time research visualization.
-*   **Chat Memory**: Interactive follow-up questions about the research report.
-*   **Multi-Format Export**: One-click download of reports as PDF or LaTeX.
-
----
-
-> [!NOTE]
-> This project was developed as part of a high-performance Agentic AI training curriculum. For support or contributions, please contact the development team.
