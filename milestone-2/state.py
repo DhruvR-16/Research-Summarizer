@@ -15,5 +15,5 @@ class AgentState(TypedDict):
     final_report: str
     sources: List[str]
     steps: Annotated[List[str], operator.add]
-    loop_count: int             # Track iterations to prevent infinite loops
+    loop_count: Annotated[int, operator.add]  # Track iterations to prevent infinite loops
     is_sufficient: bool         # Logic flag for decision node

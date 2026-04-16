@@ -9,7 +9,7 @@ def analyze_node(state: AgentState) -> Dict:
     query = state.get("query", "")
     
     if not summaries:
-        return {"analysis": "No data available for analysis.", "is_sufficient": False}
+        return {"analysis": "No data available for analysis.", "is_sufficient": False, "loop_count": 1}
 
     print(f"Node: Analyze | Processing insights from {len(summaries)} sources...")
     
@@ -45,5 +45,6 @@ def analyze_node(state: AgentState) -> Dict:
     return {
         "analysis": analysis_text,
         "is_sufficient": is_sufficient,
+        "loop_count": 1,
         "steps": ["Performed cross-document analysis and gap identification"]
     }

@@ -1,6 +1,28 @@
-import sys
 import os
-from .graph import run_research
+import sys
+import types
+from importlib import import_module
+
+
+def _load_run_research():
+    """Load the workflow entry point whether this file runs as a module or script."""
+    if __package__:
+        from .graph import run_research
+
+        return run_research
+
+    package_name = "milestone_2_runtime"
+    package_dir = os.path.dirname(__file__)
+
+    if package_name not in sys.modules:
+        package_module = types.ModuleType(package_name)
+        package_module.__path__ = [package_dir]
+        sys.modules[package_name] = package_module
+
+    return import_module(f"{package_name}.graph").run_research
+
+
+run_research = _load_run_research()
 
 def main():
     """
