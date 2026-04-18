@@ -95,11 +95,22 @@ st.markdown("""
 
 # --- SIDEBAR: SYSTEM CONFIGURATION ---
 with st.sidebar:
-    st.title("System Configuration")
+    st.title("System Status")
     st.markdown("---")
     
-    groq_key = st.text_input("Groq Intelligence API Key", value=os.getenv("GROQ_API_KEY", ""), type="password", help="Required for model synthesis")
-    tavily_key = st.text_input("Tavily Search API Key", value=os.getenv("TAVILY_API_KEY", ""), type="password", help="Optional for prioritized web retrieval")
+    # Check for credentials in environment
+    groq_ready = bool(os.getenv("GROQ_API_KEY"))
+    tavily_ready = bool(os.getenv("TAVILY_API_KEY"))
+
+    if groq_ready:
+        st.success("✅ Groq Intelligence Linked")
+    else:
+        st.error("❌ Groq Logic Offline")
+    
+    if tavily_ready:
+        st.success("✅ Tavily Search Linked")
+    else:
+        st.warning("⚠️ Tavily Search Offline")
     
     st.markdown("---")
     extract_facts = st.toggle("Technical Fact Extraction", value=True, help="Isolate key metrics and statistics into a structured table")
@@ -126,17 +137,16 @@ if terminate_process:
     st.rerun()
 
 if initiate_research:
-    if not groq_key:
-        st.error("Authentication Error: Groq API Key is required for core logic synthesis.")
+    # Retrieve credentials from system environment
+    groq_api_key = os.getenv("GROQ_API_KEY")
+    
+    if not groq_api_key:
+        st.error("Authentication Error: Groq API Key is not detected in your system environment.")
     elif not research_query:
         st.warning("Input Required: Please define a valid research objective.")
     else:
-        # Authentication persistent for current session
-        os.environ["GROQ_API_KEY"] = groq_key
-        if tavily_key:
-            os.environ["TAVILY_API_KEY"] = tavily_key
-            
         with st.status("System Status: Autonomous Processing Underway", expanded=True) as status:
+
             try:
                 st.write("Current Phase: Data Acquisition & Source Discovery")
                 # Invoke LangGraph Backend
