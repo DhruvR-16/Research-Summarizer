@@ -98,19 +98,25 @@ with st.sidebar:
     st.title("System Status")
     st.markdown("---")
     
-    # Check for credentials in environment
-    groq_ready = bool(os.getenv("GROQ_API_KEY"))
-    tavily_ready = bool(os.getenv("TAVILY_API_KEY"))
+    # Check for credentials in environment (local) or st.secrets (hosted)
+    groq_ready = bool(os.getenv("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY"))
+    system_tavily_key = os.getenv("TAVILY_API_KEY") or st.secrets.get("TAVILY_API_KEY")
+    tavily_ready = bool(system_tavily_key)
 
     if groq_ready:
         st.success("✅ Groq Intelligence Linked")
     else:
         st.error("❌ Groq Logic Offline")
     
+    # Show status of system Tavily key
     if tavily_ready:
-        st.success("✅ Tavily Search Linked")
+        st.success("✅ System Search Linked")
     else:
-        st.warning("⚠️ Tavily Search Offline")
+        st.warning("⚠️ System Search Offline")
+    
+    st.markdown("---")
+    # Allow user override for Tavily
+    user_tavily_key = st.text_input("Manual Tavily Override", type="password", help="Enter a personal Tavily key to override the system default")
     
     st.markdown("---")
     extract_facts = st.toggle("Technical Fact Extraction", value=True, help="Isolate key metrics and statistics into a structured table")
@@ -137,14 +143,26 @@ if terminate_process:
     st.rerun()
 
 if initiate_research:
-    # Retrieve credentials from system environment
-    groq_api_key = os.getenv("GROQ_API_KEY")
+    # Retrieve credentials from system environment or st.secrets
+    groq_api_key = os.getenv("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY")
+    
+    # Prioritize user-provided Tavily key, then fall back to system key
+    tavily_api_key = user_tavily_key or os.getenv("TAVILY_API_KEY") or st.secrets.get("TAVILY_API_KEY")
     
     if not groq_api_key:
-        st.error("Authentication Error: Groq API Key is not detected in your system environment.")
+        st.error("Authentication Error: Groq API Key is not detected in your system environment or Streamlit Secrets.")
     elif not research_query:
         st.warning("Input Required: Please define a valid research objective.")
     else:
+        # Pass credentials to environment for the backend tools
+        os.environ["GROQ_API_KEY"] = groq_api_key
+        if tavily_api_key:
+            os.environ["TAVILY_API_KEY"] = tavily_api_key
+        else:
+            # Explicitly remove it if neither user nor system provided it, to trigger fallback in the node
+            if "TAVILY_API_KEY" in os.environ:
+                del os.environ["TAVILY_API_KEY"]
+
         with st.status("System Status: Autonomous Processing Underway", expanded=True) as status:
 
             try:
