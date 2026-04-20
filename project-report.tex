@@ -1,0 +1,154 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+\title{\textbf{MILESTONE 2 · PROJECT REPORT}\
+Intelligent Research Topic Analysis & Agentic AI Research Assistant}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction & Problem Statement}
+
+Over 2.5 million research papers are published annually, making manual analysis infeasible. While Milestone 1 demonstrated that classical NLP can extract structured insights from research papers, it suffers from fundamental limitations:
+
+\begin{itemize}
+\item No semantic understanding
+\item Static dataset with no dynamic retrieval
+\item No reasoning capability
+\item No multi-source synthesis
+\end{itemize}
+
+\textbf{Core Problem (Milestone 2):} Design an autonomous AI agent that can:
+\begin{itemize}
+\item Retrieve information dynamically from the web
+\item Understand and synthesize multiple sources
+\item Perform multi-step reasoning
+\item Generate structured research reports
+\end{itemize}
+
+\section{System Evolution (Milestone 1 $\rightarrow$ Milestone 2)}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Component} & \textbf{Milestone 1} & \textbf{Milestone 2} \
+\midrule
+Data & arXiv static dataset & Live web (Tavily API) \
+Retrieval & TF-IDF & Semantic + agent search \
+Topics & LDA & LLM reasoning \
+Summary & TextRank & Structured report \
+Pipeline & Single-step & Multi-step agent \
+Capability & Analysis & Reasoning \
+\bottomrule
+\end{tabular}
+
+\section{System Architecture (Agent-Based)}
+
+The system is redesigned as a multi-layer agent architecture. Each layer has a clearly defined responsibility, enabling modular development and controlled reasoning.
+
+\subsection*{Layers}
+\begin{itemize}
+\item Input Layer — User query via Streamlit
+\item Agent Layer (LangGraph) — Controls execution flow, maintains state, enables conditional reasoning
+\item Data Layer — Web search via Tavily, multiple document retrieval
+\item Processing Layer — Content extraction, LLM summarization, cross-document analysis
+\item Output Layer — Structured research report
+\end{itemize}
+
+\section{Agent Pipeline — Step by Step}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Step} & \textbf{Action} & \textbf{Detail} \
+\midrule
+1 & Query Input & User provides the research topic \
+2 & Web Search & Agent retrieves multiple sources via Tavily API \
+3 & Content Extraction & HTML pages are parsed and cleaned \
+4 & LLM Summarization & Each document is summarized independently \
+5 & Multi-Source Analysis & Combine summaries, remove redundancy, identify insights \
+6 & Decision Node & Evaluate: enough information? YES → report, NO → search again \
+7 & Report Generation & Final output: Title, Abstract, Key Findings, Conclusion, Sources \
+\bottomrule
+\end{tabular}
+
+\section{Core Components (Node-Level)}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Node} & \textbf{Function} \
+\midrule
+Search Node & Retrieve sources from the web \
+Fetch Node & Extract clean text from HTML \
+Summarize Node & LLM-based summarization per document \
+Analyze Node & Combine insights across documents \
+Decision Node & Control flow — loop or proceed \
+Report Node & Generate structured final output \
+\bottomrule
+\end{tabular}
+
+\section{LLM Reasoning}
+
+Unlike Milestone 1, this system uses LLM-based reasoning.
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Aspect} & \textbf{Milestone 1} & \textbf{Milestone 2} \
+\midrule
+Output & Extracted sentences & Generated insights \
+Reasoning & None & Multi-step reasoning \
+Pipeline & Static & Dynamic agent \
+\bottomrule
+\end{tabular}
+
+\section{Evaluation & Results}
+
+Evaluation is qualitative and based on:
+\begin{itemize}
+\item Relevance of retrieved sources
+\item Coherence of generated report
+\item Completeness of insights
+\item Response time
+\end{itemize}
+
+Observation: The agent produces significantly more context-rich and structured outputs compared to the TextRank-based approach in Milestone 1.
+
+\section{Limitations & Future Improvements}
+
+\subsection*{Current Limitations}
+\begin{itemize}
+\item LLM dependency — requires API access and incurs cost
+\item API latency — web search and LLM calls add response time
+\item Possible hallucination in generated reports
+\end{itemize}
+
+\subsection*{Planned Improvements}
+\begin{itemize}
+\item Better retrieval ranking
+\item Memory module for follow-up queries
+\item Citation validation layer
+\end{itemize}
+
+\section{Team Contribution}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Member} & \textbf{Role} \
+\midrule
+Akhilesh & Search & content extraction \
+Lakshya & Agent logic — LangGraph \
+Dhruv & LLM integration & report generation \
+Kavya & UI design & deployment \
+\bottomrule
+\end{tabular}
+
+\section{Conclusion}
+
+Milestone 2 transforms the system from a traditional NLP pipeline into a fully agentic AI system capable of autonomous research reasoning. This marks a shift from data processing to intelligent decision-making.
+
+The system is scalable, dynamic, and aligned with modern AI architectures, forming a strong foundation for production-grade research automation tools.
+
+\end{document}
